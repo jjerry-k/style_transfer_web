@@ -11,8 +11,8 @@ git clone https://github.com/jjerry-k/stylet_transfer_web.git
 ```
 2. Create and Activate virtual environment
 ```bash
-    python3 -m venv env 
-    source env/bin/activate
+python3 -m venv env 
+source env/bin/activate
 ```
 
 3. Install dependencies

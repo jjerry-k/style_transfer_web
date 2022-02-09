@@ -1,14 +1,5 @@
 import re
 import base64
-import platform
-# ================
-# Coral USB Setup
-# ================
-EDGETPU_SHARED_LIB = {
-    'Linux': 'libedgetpu.so.1',
-    'Darwin': 'libedgetpu.1.dylib',
-    'Windows': 'edgetpu.dll'
-}[platform.system()]
 
 import numpy as np
 import tensorflow as tf
@@ -39,9 +30,7 @@ def np_to_base64(img_np):
     byte_image = buffered.getvalue()
     return u"data:image/png;base64," + base64.b64encode(byte_image).decode("ascii")
 
-# Function to pre-process by resizing an central cropping it.
 def preprocess_image(img, target_dim):
-    # Resize the image so that the shorter dimension becomes 256px.
     img = image.img_to_array(img)/255.
     img = np.expand_dims(img, axis=0)
     img = tf.image.resize(img, (target_dim, target_dim))
@@ -52,13 +41,8 @@ style_predict_path = tf.keras.utils.get_file('style_predict.tflite', 'https://tf
 style_transform_path = tf.keras.utils.get_file('style_transform.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/transfer/1?lite-format=tflite')
 
 def make_interpreter(model_path):
-    model_path, *device = model_path.split('@')
     return tflite.Interpreter(
-        model_path=model_path,
-        experimental_delegates=[
-            tflite.load_delegate(EDGETPU_SHARED_LIB,
-                                {'device': device[0]} if device else {})
-        ])
+        model_path=model_path)
 
 interpreter_predict = make_interpreter(model_path=style_predict_path)
 interpreter_transform = make_interpreter(model_path=style_transform_path)
