@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "style_transfer_web"
+version = "0.1.0"
+description = ""
+authors = ["jjerry-k <jaeyeol2931@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+tflite-runtime = {url = "https://github.com/google-coral/pycoral/releases/download/v2.0.0/tflite_runtime-2.5.0.post1-cp39-cp39-linux_x86_64.whl#sha256=132f8c184b99d69e40040d8067eb962d9435cd2579f5563c33b8673d257d353d"}
+pycoral = {url = "https://github.com/google-coral/pycoral/releases/download/v2.0.0/pycoral-2.0.0-cp39-cp39-linux_x86_64.whl"}
+Flask = "^2.2.2"
+gunicorn = "^20.1.0"
+opencv-python = "4.4.0.46"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

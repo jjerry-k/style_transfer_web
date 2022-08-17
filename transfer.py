@@ -1,11 +1,10 @@
 import re
 import base64
-
+import cv2
 import numpy as np
-import tensorflow as tf
 import tflite_runtime.interpreter as tflite
 
-from tensorflow.keras.preprocessing import image
+from utils import *
 
 from PIL import Image
 from io import BytesIO
@@ -31,21 +30,18 @@ def np_to_base64(img_np):
     return u"data:image/png;base64," + base64.b64encode(byte_image).decode("ascii")
 
 def preprocess_image(img, target_dim):
-    img = image.img_to_array(img)/255.
+    img = img.resize((target_dim, target_dim))
+    img = np.array(img)/255.
     img = np.expand_dims(img, axis=0)
-    img = tf.image.resize(img, (target_dim, target_dim))
-    return img
+    # img = cv2.resize(img, (target_dim, target_dim))
+    return img.astype(np.float32)
     
 # Set model path
-style_predict_path = tf.keras.utils.get_file('style_predict.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/prediction/1?lite-format=tflite')
-style_transform_path = tf.keras.utils.get_file('style_transform.tflite', 'https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/transfer/1?lite-format=tflite')
+style_predict_path = download_file('https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/prediction/1?lite-format=tflite', 'style_predict.tflite', './models/')
+style_transform_path = download_file('https://tfhub.dev/google/lite-model/magenta/arbitrary-image-stylization-v1-256/int8/transfer/1?lite-format=tflite', 'style_transform.tflite', './models/')
 
-def make_interpreter(model_path):
-    return tflite.Interpreter(
-        model_path=model_path)
-
-interpreter_predict = make_interpreter(model_path=style_predict_path)
-interpreter_transform = make_interpreter(model_path=style_transform_path)
+interpreter_predict = tflite.Interpreter(model_path=style_predict_path)
+interpreter_transform = tflite.Interpreter(model_path=style_transform_path)
 
 def run_style_predict(preprocessed_style_image):
     # Set model input.
