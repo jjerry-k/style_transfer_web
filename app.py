@@ -30,7 +30,7 @@ def transfer():
 
         # Stylize the content image using the style bottleneck.
         stylized_image = (run_style_transform(style_bottleneck, preprocessed_content_image)*255).astype(np.uint8)[0]
-        stylized_image = cv2.resize(stylized_image, (origin_height, origin_width)).astype(np.uint8)
+        stylized_image = cv2.resize(stylized_image, (origin_width, origin_height)).astype(np.uint8)
         
         # Serialize the result, you can add additional fields
         transfer_image = np_to_base64(stylized_image)
